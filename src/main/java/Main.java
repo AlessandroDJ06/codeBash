@@ -5,23 +5,17 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public final class Main {
+    private static final Path DEFAULT_INPUT = Path.of("src", "main", "resources");
+    private static final Path DEFAULT_OUTPUT = Path.of("output");
     private static final int DEFAULT_BEAM_WIDTH = 500;
 
     private Main() {}
 
     public static void main(String[] args) throws IOException {
-        if (args.length < 2) {
-            System.err.println("Gebruik: Main <inputBestandOfMap> <outputBestandOfMap> [beamWidth]");
-            return;
-        }
-        Path input = Path.of(args[0]);
-        Path output = Path.of(args[1]);
+        Path input = args.length > 0 ? Path.of(args[0]) : DEFAULT_INPUT;
+        Path output = args.length > 1 ? Path.of(args[1]) : DEFAULT_OUTPUT;
         int beamWidth = args.length > 2 ? Integer.parseInt(args[2]) : DEFAULT_BEAM_WIDTH;
 
-        if (!Files.isDirectory(input)) {
-            solve(input, output, beamWidth);
-            return;
-        }
         Files.createDirectories(output);
         for (Path file : listInputFiles(input)) {
             solveSafely(file, output.resolve(file.getFileName()), beamWidth);
